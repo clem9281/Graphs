@@ -21,6 +21,15 @@ class Graph:
             self.vertices[v1].add(v2)
         else:
             raise IndexError("That vertex does not exist")
+    def add_undirected_edge(self, v1, v2):
+        """
+        Add a directed edge to the graph.
+        """
+        if v1 in self.vertices and v2 in self.vertices:
+            self.vertices[v1].add(v2)
+            self.vertices[v2].add(v1)
+        else:
+            raise IndexError("That vertex does not exist")
         
     def bft(self, starting_vertex):
         """
@@ -52,12 +61,14 @@ class Graph:
                 visited.add(current_node)
                 for item in self.vertices[current_node]:
                     s.push(item)
-    def dft_recursive(self, starting_vertex, visited=set()):
+    def dft_recursive(self, starting_vertex, visited=None):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         This should be done using recursion.
         """
+        if visited is None:
+            visited = set()
         if starting_vertex in visited:
             return
         else:
@@ -80,7 +91,6 @@ class Graph:
             current_node = q.dequeue()
             for item in self.vertices[current_node]:
                 if item not in dist:
-                    # print(dist[current_node])
                     dist[item] = {'distance': dist[current_node]['distance'] + 1, 'previous_vertex': current_node}
                     q.enqueue(item)
         # if our destination_vertex never got added to our distance dictionary, it doesn't exist, there is no path
@@ -182,7 +192,8 @@ if __name__ == '__main__':
         1, 2, 4, 7, 6, 3, 5
         1, 2, 4, 6, 3, 5, 7
     '''
-    # graph.dft_recursive(1)
+    graph.dft_recursive(1)
+    graph.dft_recursive(1)
 
     '''
     Valid BFS path:
