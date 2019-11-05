@@ -31,6 +31,9 @@ class Graph:
         else:
             raise IndexError("That vertex does not exist")
         
+    def get_neighbors(self, vertex_id):
+        return self.vertices[vertex_id]
+        
     def bft(self, starting_vertex):
         """
         Print each vertex in breadth-first order
@@ -93,6 +96,7 @@ class Graph:
                 if item not in dist:
                     dist[item] = {'distance': dist[current_node]['distance'] + 1, 'previous_vertex': current_node}
                     q.enqueue(item)
+        print(dist)
         # if our destination_vertex never got added to our distance dictionary, it doesn't exist, there is no path
         if destination_vertex not in dist:
             return f'Could not find a path from {starting_vertex} to {destination_vertex}'
@@ -107,6 +111,27 @@ class Graph:
                 path[index] = current_node['previous_vertex']
                 current_node = dist[current_node['previous_vertex']]
             return path
+    def bfs_lecture(self, starting_vertex, destination_vertex):
+        """
+        Return a list containing the shortest path from
+        starting_vertex to destination_vertex in
+        breath-first order.
+        """
+        q = Queue()
+        q.enqueue([starting_vertex])
+        visited = set()
+        while q.size() > 0:
+            path = q.dequeue()
+            v = path[-1]
+            if v not in visited:
+                    if v == destination_vertex:
+                        return path
+                    visited.add(v)
+                    for neighbor in self.vertices[v]:
+                        path_copy = path.copy()
+                        path_copy.append(neighbor)
+                        q.enqueue(path_copy)
+        return None
     def dfs(self, starting_vertex, destination_vertex):
         """
         Return a list containing a path from
@@ -192,18 +217,19 @@ if __name__ == '__main__':
         1, 2, 4, 7, 6, 3, 5
         1, 2, 4, 6, 3, 5, 7
     '''
-    graph.dft_recursive(1)
-    graph.dft_recursive(1)
+    # graph.dft_recursive(1)
+    # graph.dft_recursive(1)
 
     '''
     Valid BFS path:
         [1, 2, 4, 6]
     '''
-    print(graph.bfs(1, 6))
+    # print(graph.bfs(1, 6))
+    print(graph.bfs_lecture(1, 6))
 
     '''
     Valid DFS paths:
         [1, 2, 4, 6]
         [1, 2, 4, 7, 6]
     '''
-    print(graph.dfs(1, 6))
+    # print(graph.dfs(1, 6))
