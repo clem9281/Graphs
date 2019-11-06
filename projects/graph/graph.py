@@ -121,8 +121,10 @@ class Graph:
         q.enqueue([starting_vertex])
         visited = set()
         while q.size() > 0:
+            print(q.queue)
             path = q.dequeue()
             v = path[-1]
+            print(v)
             if v not in visited:
                     if v == destination_vertex:
                         return path
