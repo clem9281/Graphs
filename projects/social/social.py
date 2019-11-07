@@ -1,9 +1,13 @@
+from utils import Queue
+import random
 
 
 class User:
     def __init__(self, name):
         self.name = name
-
+    def __repr__(self):
+        return f"User({self.name})"
+    
 class SocialGraph:
     def __init__(self):
         self.lastID = 0
@@ -45,11 +49,22 @@ class SocialGraph:
         self.users = {}
         self.friendships = {}
         # !!!! IMPLEMENT ME
-
+        
         # Add users
-
+        for i in range(numUsers):
+            self.addUser(f"User {i + 1}")
         # Create friendships
+        possibleFriendships = []
+        for userID in self.users:
+            for friendID in range(userID + 1, self.lastID + 1):
+                possibleFriendships.append((userID, friendID))
+        random.shuffle(possibleFriendships)
+        totalFriendships = numUsers * avgFriendships
+        for i in range(totalFriendships // 2):
+            friendShip = possibleFriendships[i]
+            self.addFriendship(friendShip[0], friendShip[1])
 
+        
     def getAllSocialPaths(self, userID):
         """
         Takes a user's userID as an argument
@@ -61,12 +76,25 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+        q = Queue()
+        q.enqueue([userID])
+        while q.size() > 0:
+            current_path = q.dequeue()
+            last_path_element = current_path[-1]
+            if last_path_element not in visited:
+                visited[last_path_element] = current_path
+                if last_path_element in self.friendships:
+                    for friend in self.friendships[last_path_element]:
+                        path_copy = current_path.copy()
+                        path_copy.append(friend)
+                        q.enqueue(path_copy)
         return visited
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populateGraph(10, 2)
+    sg.populateGraph(5, 2)
+    print(sg.users)
     print(sg.friendships)
     connections = sg.getAllSocialPaths(1)
     print(connections)
